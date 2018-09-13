@@ -75,4 +75,4 @@ function loadScript({ id, src }) {
   })
 }
 
-module.exports = loadScript§
+module.exports = loadScript
