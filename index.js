@@ -49,7 +49,9 @@ function appendUnique(script, next) {
  * get a listener and when is loaded first and second will be completed.
  * @scenario 3: attempt load the same external script after is completed.
  */
-function loadScript({ id, src }) {
+function loadScript(args) {
+  const src =  args.src
+  const id = args.id
   const script = document.createElement('script')
 
   return new Promise((resolve, reject) => {
