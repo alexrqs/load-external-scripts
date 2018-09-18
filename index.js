@@ -49,10 +49,12 @@ function appendUnique(script, next) {
  * get a listener and when is loaded first and second will be completed.
  * @scenario 3: attempt load the same external script after is completed.
  */
-function loadScript(args) {
-  const src =  args.src
-  const id = args.id
+function loadScript({ src, id, data }) {
   const script = document.createElement('script')
+
+  script.id = id
+  script.src = src
+  script.setAttribute(`data-${data ? data : 'vendor'}`, id)
 
   return new Promise((resolve, reject) => {
     // once the lib is registered you can resolve immediatelly
@@ -68,13 +70,15 @@ function loadScript(args) {
     })
 
     script.onerror = function onErrorLoadingScript() {
+      // Remove the element from the body in case of error
+      // to give the possibility to try again later
+      // calling the same function
+      document.body.removeChild(script)
       reject()
     }
 
-    script.id = id
-    script.src = src
     appendUnique(script, resolve)
   })
 }
 
-module.exports = loadScript
+export default loadScript
