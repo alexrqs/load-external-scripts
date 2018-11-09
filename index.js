@@ -1,5 +1,5 @@
 // This array is to keep track of the loaded libraries
-const loadedLibraries = []
+window.__loadedLibraries = window.__loadedLibraries || []
 
 /**
  * Record the libs (id) only if the array doesn't contain the same already
@@ -7,36 +7,9 @@ const loadedLibraries = []
  * @param  {String} id of the script DOM element
  */
 function registerLibraryLoaded(id) {
-  if (loadedLibraries.indexOf(id) < 0) {
-    loadedLibraries.push(id)
+  if (window.__loadedLibraries.indexOf(id) < 0) {
+    window.__loadedLibraries.push(id)
   }
-}
-
-/**
- * Check if the script.id exist already on the page
- * to add a listener because the library you asked to load
- * might be on the loading process
- * and after is loaded register the lib to avid this process twice
- *
- * @param  {HTMLElement}
- * @param  {Function}
- * @return {[type]}
- */
-function appendUnique(script, next) {
-  const appendedScript = document.getElementById(script.id)
-  if (appendedScript) {
-    appendedScript.addEventListener('load', function onLoadScript() {
-      appendedScript.removeEventListener('load', onLoadScript)
-      registerLibraryLoaded(script.id)
-      next()
-    })
-    return
-  }
-
-  // this will only add a new script tag if the lib is not already on the DOM
-  // the above part of this function will handle the scenario where
-  // even tho is already on the DOM might be still loading
-  document.body.appendChild(script)
 }
 
 /**
@@ -55,29 +28,34 @@ function loadScript({ src, id, data }) {
   script.id = id
   script.src = src
   script.setAttribute(`data-${data ? data : 'vendor'}`, id)
-
+  console.log('exe', id);
   return new Promise((resolve, reject) => {
     // once the lib is registered you can resolve immediatelly
     // because it means that is fully loaded
-    if (loadedLibraries.indexOf(id) > -1) {
+    console.log('promise ready to attach 2');
+    if (window.__loadedLibraries.indexOf(src) > -1) {
+      console.log('existing');
       resolve(`${id} was loaded before`)
     }
+    console.log('promise ready to attach 3');
 
     script.addEventListener('load', function onLoadScript() {
+      console.log('listen load', id);
       script.removeEventListener('load', onLoadScript)
-      registerLibraryLoaded(id)
+      registerLibraryLoaded(src)
       resolve(id)
     })
 
     script.onerror = function onErrorLoadingScript() {
+      console.log('listen error', id);
       // Remove the element from the body in case of error
       // to give the possibility to try again later
       // calling the same function
-      document.body.removeChild(script)
+      // document.body.removeChild(script)
       reject()
     }
 
-    appendUnique(script, resolve)
+    document.body.appendChild(script)
   })
 }
 
