@@ -13,7 +13,7 @@ Mainly for 3 reasons
 ### Scenario 1
 You try to load a vendor that pollutes the window with a variable that you need later. say window.analytics.
 ```js
-import loadScript from 'load-external-script'
+import loadScript from 'load-external-scripts'
 
 loadScript({ src: 'http://...', id: 'uniqueid' })
   .then(/* Contnue with your app */)
@@ -23,7 +23,7 @@ loadScript({ src: 'http://...', id: 'uniqueid' })
 Two instances of the same class try to load the same script, like when you need a vendor for a video and you're supposed to load 2 videos on the same page.
 
 ```js
-import loadScript from 'load-external-script'
+import loadScript from 'load-external-scripts'
 
 Promise.all([
   loadScript({ src: 'http://sameurl.com/vendor.js', id: 'sameID' }),
@@ -36,7 +36,7 @@ Promise.all([
 Your vendor is already loaded but 2 minutes later you try to load the same script, so you don't want to duplicate the tag nor actually load it again.
 
 ```js
-import loadScript from 'load-external-script'
+import loadScript from 'load-external-scripts'
 
 loadScript({ src: 'http://sameurl.com/vendor.js', id: 'sameID' }),
 setTimeout(function() {
