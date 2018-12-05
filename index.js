@@ -32,7 +32,7 @@ function loadScript({ src, id, data }) {
   return new Promise((resolve, reject) => {
     // once the lib is registered you can resolve immediatelly
     // because it means that is fully loaded
-    console.log('promise ready to attach 2');
+
     if (window.__loadedLibraries.indexOf(src) > -1) {
       resolve(`${id} was loaded before`)
     }
@@ -44,12 +44,11 @@ function loadScript({ src, id, data }) {
     })
 
     script.onerror = function onErrorLoadingScript() {
-      console.log('listen error', id);
       // Remove the element from the body in case of error
       // to give the possibility to try again later
       // calling the same function
       // document.body.removeChild(script)
-      reject()
+      reject(`error loading ${src}`)
     }
 
     document.body.appendChild(script)
