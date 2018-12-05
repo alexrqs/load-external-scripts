@@ -28,19 +28,16 @@ function loadScript({ src, id, data }) {
   script.id = id
   script.src = src
   script.setAttribute(`data-${data ? data : 'vendor'}`, id)
-  console.log('exe', id);
+
   return new Promise((resolve, reject) => {
     // once the lib is registered you can resolve immediatelly
     // because it means that is fully loaded
     console.log('promise ready to attach 2');
     if (window.__loadedLibraries.indexOf(src) > -1) {
-      console.log('existing');
       resolve(`${id} was loaded before`)
     }
-    console.log('promise ready to attach 3');
 
     script.addEventListener('load', function onLoadScript() {
-      console.log('listen load', id);
       script.removeEventListener('load', onLoadScript)
       registerLibraryLoaded(src)
       resolve(id)
