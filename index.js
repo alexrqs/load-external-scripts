@@ -22,7 +22,7 @@ function registerLibraryLoaded(id) {
  * get a listener and when is loaded first and second will be completed.
  * @scenario 3: attempt load the same external script after is completed.
  */
-function loadScript({ src, id, data }) {
+function getScriptLoadingPromise({ src, id, data }) {
   const script = document.createElement('script')
 
   script.id = id
@@ -55,4 +55,17 @@ function loadScript({ src, id, data }) {
   })
 }
 
-export default loadScript
+function loadScript({ id, src, data }) {
+    return getScriptLoadingPromise({ id, src, data });
+}
+
+function loadScripts(scripts) {
+    let chain = Promise.resolve();
+    for (let script of scripts) {
+        chain = chain.then(() => getScriptLoadingPromise(script))
+    }
+    return chain;
+}
+
+
+export { loadScript, loadScripts }
