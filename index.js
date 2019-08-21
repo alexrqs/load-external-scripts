@@ -33,13 +33,13 @@ function loadScript({ src, id, data }) {
     // once the lib is registered you can resolve immediatelly
     // because it means that is fully loaded
 
-    if (window.__loadedLibraries.indexOf(src) > -1) {
+    if (window.__loadedLibraries.indexOf(id) > -1) {
       resolve(`${id} was loaded before`)
     }
 
     script.addEventListener('load', function onLoadScript() {
       script.removeEventListener('load', onLoadScript)
-      registerLibraryLoaded(src)
+      registerLibraryLoaded(id)
       resolve(id)
     })
 
